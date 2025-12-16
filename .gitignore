@@ -1,0 +1,34 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+*venv/
+
+# IDE / OS clutter
+.idea/
+.vscode/
+.DS_Store
+
+# Build / distribution artifacts
+build/
+dist/
+*.egg-info/
+
+# Test reports & screenshots (kept via .gitkeep placeholders)
+reports/**
+!reports/
+!reports/.gitkeep
+!reports/screenshots/
+!reports/screenshots/.gitkeep
+!reports/accessibility/
+!reports/accessibility/.gitkeep
+
+# BrowserStack / Selenium logs
+logs/
+*.log
