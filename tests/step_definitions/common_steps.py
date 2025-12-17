@@ -35,6 +35,12 @@ def login_without_credentials(driver):
     LoginPage(driver).login_without_credentials()
 
 
+@then("I should see the login UI controls")
+def verify_login_ui_controls(driver):
+    """Ensure the login modal renders the BrowserStack branding and selectors."""
+    assert LoginPage(driver).login_controls_present(), "Login UI controls were not visible"
+
+
 @when(parsers.parse('I add "{product_name}" to the cart'))
 def add_product_to_cart(driver, product_name):
     """Add a product to the cart from the product page."""

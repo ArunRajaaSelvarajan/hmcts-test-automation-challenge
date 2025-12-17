@@ -17,7 +17,8 @@ class LoginPage(BasePage):
     logger = get_logger(__name__)
 
     SIGN_IN_BUTTON = (By.ID, "signin")
-    LOGOUT_LINK = (By.XPATH,"//span[contains(text(), 'Logout')]")
+    LOGOUT_LINK = (By.XPATH, "//span[contains(text(), 'Logout')]")
+    HEADER_LOGO = (By.XPATH, "//div[contains(@class,'justify-center')]")
     USERNAME_DROPDOWN = (By.XPATH, "//div[contains(text(),'Select Username')]")
     PASSWORD_DROPDOWN = (By.XPATH, "//div[contains(text(),'Select Password')]")
     LOGIN_BUTTON = (By.ID, "login-btn")
@@ -82,3 +83,20 @@ class LoginPage(BasePage):
     def verify_login_page(self):
         """Verify that the login page is open."""
         return self.element_visible(self.LOGIN_BUTTON)
+
+    def login_controls_present(self) -> bool:
+        """
+        Smoke check that the modal renders the BrowserStack logo, credential selectors, and CTA.
+
+        Returns:
+            True if all required controls are visible; otherwise False.
+        """
+        locators = [
+            self.HEADER_LOGO,
+            self.USERNAME_DROPDOWN,
+            self.PASSWORD_DROPDOWN,
+            self.LOGIN_BUTTON,
+        ]
+        results = [self.element_visible(locator) for locator in locators]
+        self.logger.info("Login UI controls visibility: %s", results)
+        return all(results)

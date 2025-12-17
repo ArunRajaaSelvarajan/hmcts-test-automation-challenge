@@ -23,7 +23,7 @@ All user journeys are written in Gherkin under `tests/features` and executed via
 
 | Feature file | Description | Markers |
 | ------------ | ----------- | ------- |
-| `login.feature` | Valid login flows, negative login validation | `login`, `login_valid`, `login_invalid` |
+| `login.feature` | Valid login flows, negative login validation, UI smoke checks | `login`, `login_valid`, `login_invalid`, `ui_baseline` |
 | `checkout.feature` | Add-to-cart validations, enter shipping details, order summary validation, empty cart behaviour | `checkout`, `checkout_single_cart`, `checkout_shipping_details`, `checkout_empty_cart` |
 | `e2e_purchase.feature` | End-to-end purchase scenarios (single & multi product) | `e2e`, `e2e_single_item`, `e2e_multi_item` |
 | `tests/features/api_catalog.feature` | BrowserStack Demo catalog + sign-in API checks | `api`, `api_catalog`, `api_login` |

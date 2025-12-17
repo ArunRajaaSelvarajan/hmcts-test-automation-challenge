@@ -7,6 +7,10 @@ Feature: Login
     Given I am on the bstackdemo homepage
     When I click on Sign In link
 
+  @smoke @login @ui_baseline
+  Scenario: Login modal displays core UI controls
+    Then I should see the login UI controls
+
   @smoke @regression @login @login_valid
   Scenario Outline: Valid user can log in successfully
     When I log in with valid username "<username>" and password "<password>"
