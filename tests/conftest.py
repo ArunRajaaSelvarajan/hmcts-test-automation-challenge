@@ -13,8 +13,12 @@ import pytest
 import yaml
 
 from utils.driver_factory import get_driver
+from api.clients.store_client import StoreClient
 
-pytest_plugins = ["tests.step_definitions.common_steps"]
+pytest_plugins = [
+    "tests.step_definitions.common_steps",
+    "tests.step_definitions.api_steps",
+]
 
 # Sample BrowserStack Platform, OS version and browser combinations
 BROWSERSTACK_ENVIRONMENTS = [
@@ -52,7 +56,7 @@ def pytest_runtest_makereport(item):
 
 def pytest_html_report_title(report):
     """Set custom title for HTML report."""
-    report.title = "UI Test Report"
+    report.title = "Test Report"
 
 
 def pytest_html_results_table_header(cells):
@@ -63,7 +67,8 @@ def pytest_html_results_table_header(cells):
 def pytest_html_results_table_row(report, cells):
     """Add screenshot to HTML report table row."""
     if report.failed and hasattr(report, 'screenshot_path'):
-        cells.insert(2, f'<td><a href="{report.screenshot_path}" target="_blank">Screenshot</a></td>')
+        cells.insert(
+            2, f'<td><a href="{report.screenshot_path}" target="_blank">Screenshot</a></td>')
     elif report.failed:
         cells.insert(2, "<td>No screenshot</td>")
     else:
@@ -92,6 +97,7 @@ def config():
         "run_mode": os.getenv("RUN_MODE"),
         "grid_url": os.getenv("GRID_URL"),
         "implicit_wait": os.getenv("IMPLICIT_WAIT"),
+        "api_base_url": os.getenv("API_BASE_URL"),
     }
 
     for key, value in overrides.items():
@@ -103,6 +109,15 @@ def config():
             config_data[key] = value
 
     return config_data
+
+
+@pytest.fixture(scope="session")
+def store_client(config):
+    """Provide a REST client for BrowserStack demo APIs."""
+    base_url = config.get("api_base_url")
+    if not base_url:
+        raise RuntimeError("api_base_url missing from config/config.yaml")
+    return StoreClient(base_url)
 
 
 @pytest.fixture

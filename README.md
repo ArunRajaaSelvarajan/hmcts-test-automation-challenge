@@ -26,6 +26,7 @@ All user journeys are written in Gherkin under `tests/features` and executed via
 | `login.feature` | Valid login flows, negative login validation | `login`, `login_valid`, `login_invalid` |
 | `checkout.feature` | Add-to-cart validations, enter shipping details, order summary validation, empty cart behaviour | `checkout`, `checkout_single_cart`, `checkout_shipping_details`, `checkout_empty_cart` |
 | `e2e_purchase.feature` | End-to-end purchase scenarios (single & multi product) | `e2e`, `e2e_single_item`, `e2e_multi_item` |
+| `tests/features/api_catalog.feature` | BrowserStack Demo catalog + sign-in API checks | `api`, `api_catalog`, `api_login` |
 
 ---
 
@@ -71,6 +72,7 @@ browser: "chrome-headless"        # chrome, firefox, chrome-headless, ...
 run_mode: "local"                 # local, grid, browserstack
 grid_url: "http://selenium:4444/wd/hub"
 implicit_wait: 2
+api_base_url: "https://www.bstackdemo.com/api"
 ```
 
 All values can be overridden through environment variables at runtime:
@@ -81,6 +83,7 @@ All values can be overridden through environment variables at runtime:
 | `RUN_MODE` | `local` / `grid` / `browserstack` |
 | `GRID_URL` | Grid endpoint when `run_mode=grid` |
 | `IMPLICIT_WAIT` | Wait duration in seconds |
+| `API_BASE_URL` | Override the BrowserStack Demo API endpoint |
 | `BROWSERSTACK_USERNAME`/`BROWSERSTACK_ACCESS_KEY` | Required for BrowserStack execution |
 
 ---
@@ -101,6 +104,19 @@ pytest -m login_valid
 export BROWSER=chrome
 pytest
 ```
+
+### API-only checks
+```bash
+pytest -m api
+```
+This executes the scenarios in `tests/features/api_catalog.feature` backed by the REST client and pytest-bdd steps.
+Set `API_BASE_URL` if you want to point the service tests at a different backend.
+
+### Static analysis (pylint)
+```bash
+pylint --rcfile=.pylintrc api pages tests utils
+```
+The `.pylintrc` keeps the run focused on true errors (E level) so CI can fail fast on syntax/import issues without overwhelming noise.
 
 ---
 
@@ -136,12 +152,15 @@ Capabilities are defined in `utils/driver_factory.get_browserstack_driver`.
 
 ## CI pipeline
 `/.github/workflows/ci.yml` runs for every push to `main` and for pull requests in GitHub:
-1. Checks out the repository via `actions/checkout`.
-2. Sets up Docker Buildx so Compose builds work reliably on the hosted runner.
-3. Runs `docker compose build tests` followed by `docker compose up --abort-on-container-exit --exit-code-from tests` to execute the suite against the Selenium Grid service.
-4. Always performs `docker compose down -v` (even on failures) for cleanup.
+- **Lint job** – installs Python dependencies and runs `pylint --rcfile=.pylintrc api pages tests utils` to catch syntax/import errors early.
+- **Tests job** – depends on lint, then:
+  1. Checks out the repository via `actions/checkout`.
+  2. Sets up Docker Buildx so Compose builds work reliably on the hosted runner.
+  3. Runs `docker compose build tests` followed by `docker compose up --abort-on-container-exit --exit-code-from tests` to execute the suite against the Selenium Grid service.
+  4. Always performs `docker compose down -v` (even on failures) for cleanup.
 
 Runner requirements: GitHub-hosted Ubuntu runners already ship with Docker + Compose, so the only configuration you need is to store BrowserStack credentials (if required) as Actions secrets.
+The default pytest configuration runs with `-n auto`, so CI automatically parallelises tests across the runner via `pytest-xdist`.
 
 ---
 

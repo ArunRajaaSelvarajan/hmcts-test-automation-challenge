@@ -1,5 +1,6 @@
 base_url: "https://www.bstackdemo.com"
-browser: "chrome"          # chrome, firefox, chrome-headless, firefox-headless
+browser: "chrome-headless"          # chrome, firefox, chrome-headless, firefox-headless
 run_mode: "local"          # local, browserstack or grid
 grid_url: "http://selenium:4444/wd/hub" # only when run_mode is grid
 implicit_wait: 2
+api_base_url: "https://www.bstackdemo.com/api"

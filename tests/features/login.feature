@@ -26,7 +26,7 @@ Feature: Login
     When I try log in without entering credentials
     Then I should see an error message indicating login failed
     And I should remain on the login page without being logged in
-# (commented out intentionally)
-# @login @login_accessibility
-#   Scenario: Login page should pass accessibility checks
-#     Then the page should pass accessibility checks
+
+@login @login_accessibility
+  Scenario: Login page should pass accessibility checks
+    Then the page should pass accessibility checks

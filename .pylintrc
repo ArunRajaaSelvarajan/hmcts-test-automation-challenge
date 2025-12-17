@@ -1,0 +1,9 @@
+[MASTER]
+ignore=.venv,uisvenv
+
+[MESSAGES CONTROL]
+disable=all
+enable=E
+
+[FORMAT]
+max-line-length=120
